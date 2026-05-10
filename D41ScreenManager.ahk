@@ -3,6 +3,14 @@
 
 ; Force sensor panel on D41 screen and move other windows away from it.
 
+; Note: may not work reliably with high DPI screen(s) due to bug in AIDA64.
+; Works best with full HD and quad HD monitors at 100% scaling.
+
+; Set "Override high DPI scaling behavior" for all users to "System"
+; in exe "Compatibility" tab settings for both "aida64.exe"
+; and "D41ScreenManager.exe" when high DPI screen is used. Also set
+; D41 screen scaling to 100% instead of 125%. This is important.
+
 Delay := 1000
 ; D41 screen size values at 125% scaling: 1024x640. They must be adjusted
 ; if scaling is changed, e.g. 1280x800 at 100% scaling,
@@ -93,6 +101,15 @@ GetDND() {
     return 0
 }
 
+; WinMoveTop() does not work all the time...
+PlaceWindowOnTopForFuckingReal(hwnd) {
+    DllCall("SetWindowPos", "ptr", hwnd, "ptr", -1, "int", 0, "int", 0, "int", 0, "int", 0, "uint", 0x413, "int")
+    style := DllCall("GetWindowLong", "ptr", hwnd, "int", -20, "int")
+    DllCall("SetWindowLong", "ptr", hwnd, "int", style + 0x8, "int")
+    Sleep(10)
+    DllCall("SetWindowLong", "ptr", hwnd, "int", style, "int")
+}
+
 MoveWindows() {
     monitors := GetMonitorInfo()
     if (monitors.Length < 1) {
@@ -103,6 +120,7 @@ MoveWindows() {
         return
     }
     primary := FindPrimary(monitors, d41)
+
     windows := WinGetList()
     for id in windows {
         try {
@@ -141,14 +159,19 @@ MoveWindows() {
         } else {
             if (xpos != monitors[d41].Left || ypos != monitors[d41].Top) {
                 try {
+                    ;SoundBeep(4800, 200) ; Debug beep
                     WinMove(monitors[d41].Left, monitors[d41].Top, D41Width, D41Height, "ahk_id " . id)
                     WinMoveTop("ahk_id " . id)
-                    WinMoveBottom("ahk_class Shell_TrayWnd")
-                    WinActivate("ahk_id " . id)
+                    ;PlaceWindowOnTopForFuckingReal(id)
+                    ;WinMoveBottom("ahk_class Shell_TrayWnd")
+                    ;WinActivate("ahk_id " . id)
                 }
             } else if (primary == 0) {
                 try {
+                    ;SoundBeep(1200, 200) ; Debug beep
                     WinMoveTop("ahk_id " . id)
+                    ;PlaceWindowOnTopForFuckingReal(id)
+                    ;WinMoveBottom("ahk_class Shell_TrayWnd")
                     WinActivate("ahk_id " . id)
                 }
             }
