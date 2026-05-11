@@ -14,13 +14,17 @@ This tool moves windows away from D41 screen if they end up there. This can happ
 
 Based on [AutoHotKey](https://www.autohotkey.com/). Use the pre-built `exe` or make your own with [Ahk2Exe](/AutoHotkey/Ahk2Exe).
 
-***
+**Note:** must be run as administrator. Otherwise script would be unable to move certain windows.
+
+![Configure to run as administrator](Images/administrator.png)
 
 适用于带集成HUD屏幕的Jonsbo D41电脑机箱。
 
 如果窗口出现在 D41 屏幕上，此工具会将它们移开。这种情况可能发生在您关闭主显示器时。
 
 基于 [AutoHotKey](https://www.autohotkey.com/)。可以使用预编译的 `exe` 文件，也可以使用 [Ahk2Exe](/AutoHotkey/Ahk2Exe) 自行编译。
+
+注意：此脚本必须以管理员身份运行。否则，它将无法移动某些窗口。
 
 High DPI
 --------
